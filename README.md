@@ -1,4 +1,26 @@
-api usage:
+### Create VirtualEnv
+```
+python -m venv venv
+```
+
+### Activate VirtualEnv
+```
+.\venv\Scripts\activate
+```
+
+### Install Requirements
+```
+pip install -r requirements.txt
+```
+
+### Run Server
+```
+python manage.py runserver 8000
+```
+
+
+
+### api usage:
 
 send username and password as a json to http://127.0.0.1:8000/en/api/v1/get-token/
 this request must be POST method.
