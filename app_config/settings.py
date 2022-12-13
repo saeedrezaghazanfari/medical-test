@@ -6,8 +6,8 @@ from django.utils.translation import gettext_lazy as _
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = config('SECRET_KEY')
-DEBUG = config('DEBUG')
+SECRET_KEY = 'django-insecure-2a#ckr8-u4(5!y4p=b-zaz7_#*xxa%s@a^cw9ntoxu#4l%ikm0'
+DEBUG = True
 ALLOWED_HOSTS = []
 # CSRF_TRUSTED_ORIGINS = []
 
@@ -62,7 +62,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = config('WSGI_APPLICATION')
+WSGI_APPLICATION = 'app_config.wsgi.application'
 
 
 # Database
@@ -98,10 +98,10 @@ LANGUAGES = [
     ('fa', _('Persian')),
     ('en', _('English')),
 ]
-LANGUAGE_CODE = config('LANGUAGE_CODE')
-TIME_ZONE = config('TIME_ZONE')
-USE_I18N = config('USE_I18N')
-USE_TZ = config('USE_TZ')
+LANGUAGE_CODE = 'fa'
+TIME_ZONE = 'Asia/Tehran'
+USE_I18N = True
+USE_TZ = True
 
 
 STATIC_URL = '/site_static/'
@@ -114,7 +114,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # ######### Custom User ######### #
-AUTH_USER_MODEL = config('AUTH_USER_MODEL')
+AUTH_USER_MODEL = 'app_auth.User'
 
 # ######### API ######### #
 CORS_ALLOWED_ORIGINS = [
