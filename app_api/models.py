@@ -34,7 +34,7 @@ class LabResultModel(models.Model):
         verbose_name_plural = _('جواب آزمایش ها')
 
     def __str__(self):
-        return self.code
+        return str(self.patient)
 
 
 class LabResultCategoryModel(models.Model):
@@ -47,7 +47,6 @@ class LabResultCategoryModel(models.Model):
 
     def __str__(self):
         return str(self.title)
-
 
 
 class SonographyCenterModel(models.Model):
