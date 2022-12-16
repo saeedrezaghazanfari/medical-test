@@ -7,7 +7,8 @@ class AdminUser(UserAdmin):
     UserAdmin.fieldsets[1][1]['fields'] = (
         'first_name',
         'last_name',
-        'phone'
+        'phone',
+        'permission'
     )
     UserAdmin.fieldsets[2][1]['fields'] = (
         'is_active',

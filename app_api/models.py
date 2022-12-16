@@ -10,6 +10,7 @@ class LabModel(models.Model):
     pos = models.CharField(max_length=255, verbose_name=_('موقعیت'))
     phone = models.CharField(max_length=40, blank=True, null=True, verbose_name=_('تلفن'))
     is_active = models.BooleanField(default=False, verbose_name=_('فعال/غیرفعال'))
+    permission = models.CharField(max_length=255, blank=True, null=True, verbose_name=_('دسترسی'))
 
     class Meta:
         ordering = ['-id']
@@ -55,6 +56,7 @@ class SonographyCenterModel(models.Model):
     pos = models.CharField(max_length=255, verbose_name=_('موقعیت'))
     phone = models.CharField(max_length=40, blank=True, null=True, verbose_name=_('تلفن'))
     is_active = models.BooleanField(default=False, verbose_name=_('فعال/غیرفعال'))
+    permission = models.CharField(max_length=255, blank=True, null=True, verbose_name=_('دسترسی'))
 
     class Meta:
         ordering = ['-id']
