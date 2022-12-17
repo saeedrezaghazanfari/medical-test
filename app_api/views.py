@@ -10,7 +10,7 @@ from .models import LabResultModel, SonographyResultModel
 # url: /api/v1/get-patient-data/
 class GetPatientData(APIView):
 
-    # permission_classes = [AllowAny] #TODO
+    permission_classes = [AllowAny] #TODO
 
     def post(self, request):
         code = request.POST.get('code')
