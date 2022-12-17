@@ -1,12 +1,14 @@
 from rest_framework import serializers
 
 from django.utils.translation import gettext_lazy as _
+from app_auth.models import User
 from .models import LabModel, LabResultModel, LabResultCategoryModel, SonographyCenterModel, SonographyResultModel
-    
-# class BankSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = BankModel
-#         exclude = ['user']
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        exclude = ['id', 'password', 'is_staff', 'is_active', 'groups', 'user_permissions']
 
 
 class LabSerializer(serializers.ModelSerializer):

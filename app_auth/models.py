@@ -22,7 +22,6 @@ class DoctorModel(models.Model):
     medical_code = models.BigIntegerField(verbose_name=_('کد نظام پزشکی'))
     user = models.OneToOneField(to=User, on_delete=models.SET_NULL, null=True, verbose_name=_('کاربر'))
     is_active = models.BooleanField(default=False, verbose_name=_('فعال/غیرفعال'))
-    permission = models.CharField(max_length=255, blank=True, null=True, verbose_name=_('دسترسی'))
 
     class Meta:
         ordering = ['-id']
@@ -40,7 +39,6 @@ class DoctorModel(models.Model):
 class ManagerModel(models.Model):
     user = models.OneToOneField(to=User, on_delete=models.SET_NULL, null=True, verbose_name=_('کاربر'))
     is_active = models.BooleanField(default=False, verbose_name=_('فعال/غیرفعال'))
-    permission = models.CharField(max_length=255, blank=True, null=True, verbose_name=_('دسترسی'))
 
     class Meta:
         ordering = ['-id']
