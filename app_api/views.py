@@ -39,17 +39,12 @@ class GetUserData(APIView):
     # permission_classes = [AllowAny] #TODO
 
     def post(self, request):
-        code = request.POST.get('code')
-        if code:
-            if User.objects.filter(username=code).exists():
-                user = User.objects.get(username=code)
-                
-                user_serializer = UserSerializer(user)
-                
-                response_data =  {
-                    'data': user_serializer.data, 
-                    'status': 200
-                }
-                return Response(response_data)
-            return Response({'status': 400})
+        if request.user:
+            user_serializer = UserSerializer(request.user)
+            
+            response_data =  {
+                'data': user_serializer.data, 
+                'status': 200
+            }
+            return Response(response_data)
         return Response({'status': 400})
