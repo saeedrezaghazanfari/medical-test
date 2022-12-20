@@ -21,7 +21,7 @@ from .models import (
 )
 
 
-# url: /api/v1/get-patient-data/
+# url: /api/v1/get/patient/data/
 class GetPatientData(APIView):
 
     # permission_classes = [AllowAny] #TODO
@@ -47,14 +47,15 @@ class GetPatientData(APIView):
         return Response({'status': 400})
 
 
-# url: /api/v1/get-user-data/
+# url: /api/v1/get/user/data/
 class GetUserData(APIView):
 
     # permission_classes = [AllowAny] #TODO
 
     def post(self, request):
         if request.user:
-            user_serializer = UserSerializer(request.user)
+            user = User.objects.get(username=request.user.username)
+            user_serializer = UserSerializer(user)
             
             response_data =  {
                 'data': user_serializer.data, 
