@@ -56,9 +56,18 @@ class GetUserData(APIView):
         if request.user:
             user = User.objects.get(username=request.user.username)
             user_serializer = UserSerializer(user)
+
+            is_sono = user.sonographycentermodel_set.filter(is_active=True).exists()
+            is_lab = user.labmodel_set.filter(is_active=True).exists()
+            is_doctor = user.doctormodel_set.filter(is_active=True).exists()
+            is_manager = user.managermodel_set.filter(is_active=True).exists()
             
             response_data =  {
-                'data': user_serializer.data, 
+                'data': user_serializer.data,
+                'is_sono': is_sono, 
+                'is_lab': is_lab, 
+                'is_doctor': is_doctor, 
+                'is_manager': is_manager, 
                 'status': 200
             }
             return Response(response_data)
@@ -76,7 +85,8 @@ class CreateSonographyCenter(APIView):
             serializer = SonographyCenterSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
 
-            SonographyCenterModel.objects.create(
+            new_sonography_center = SonographyCenterModel.objects.create(
+                user=request.user,
                 title=request.POST.get('title'),
                 code=request.POST.get('code'),
                 pos=request.POST.get('pos'),
@@ -85,6 +95,7 @@ class CreateSonographyCenter(APIView):
             )
             
             response_data =  { 
+                'new_sono_center': SonographyCenterSerializer(new_sonography_center).data,
                 'status': 200
             }
             return Response(response_data)
@@ -103,7 +114,8 @@ class CreateLab(APIView):
             serializer = LabSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
 
-            LabModel.objects.create(
+            new_lab_center = LabModel.objects.create(
+                user=request.user,
                 title=request.POST.get('title'),
                 code=request.POST.get('code'),
                 pos=request.POST.get('pos'),
@@ -112,6 +124,7 @@ class CreateLab(APIView):
             )
             
             response_data =  { 
+                'new_lab_center': LabSerializer(new_lab_center).data,
                 'status': 200
             }
             return Response(response_data)
@@ -130,11 +143,12 @@ class CreateLabCategory(APIView):
             serializer = LabResultCategorySerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             
-            LabResultCategoryModel.objects.create(
+            new_lab_category = LabResultCategoryModel.objects.create(
                 title=request.POST.get('title'),
             )
             
             response_data =  { 
+                'new_lab_category': LabResultCategorySerializer(new_lab_category).data,
                 'status': 200
             }
             return Response(response_data)
@@ -164,7 +178,8 @@ class CreateManager(APIView):
             )
 
             ManagerModel.objects.create(
-                user=user
+                user=user,
+                is_active=True
             )
             
             response_data =  { 

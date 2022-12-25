@@ -23,7 +23,6 @@ class ManagerSerializer(serializers.ModelSerializer):
     class Meta:
         model = ManagerModel
         fields = '__all__'
-        # exclude = ['id', 'password', 'is_staff', 'is_active', 'groups', 'user_permissions']
 
 
 class LabSerializer(serializers.ModelSerializer):

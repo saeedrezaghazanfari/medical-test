@@ -1,15 +1,16 @@
 from django.utils import timezone
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from app_auth.models import PatientModel
+from app_auth.models import PatientModel, User
 
 
 class LabModel(models.Model):
+    user = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True, verbose_name=_('کاربر'))
     title = models.CharField(max_length=255, verbose_name=_('نام'))
     code = models.CharField(max_length=255, unique=True, verbose_name=_('کد'))
     pos = models.CharField(max_length=255, verbose_name=_('موقعیت'))
     phone = models.CharField(max_length=40, blank=True, null=True, verbose_name=_('تلفن'))
-    is_active = models.BooleanField(default=False, verbose_name=_('فعال/غیرفعال'))
+    is_active = models.BooleanField(default=True, verbose_name=_('فعال؟'))
     permission = models.CharField(max_length=255, blank=True, null=True, verbose_name=_('دسترسی'))
 
     class Meta:
@@ -51,11 +52,12 @@ class LabResultCategoryModel(models.Model):
 
 
 class SonographyCenterModel(models.Model):
+    user = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True, verbose_name=_('کاربر'))
     title = models.CharField(max_length=255, verbose_name=_('نام'))
     code = models.CharField(max_length=255, unique=True, verbose_name=_('کد'))
     pos = models.CharField(max_length=255, verbose_name=_('موقعیت'))
     phone = models.CharField(max_length=40, blank=True, null=True, verbose_name=_('تلفن'))
-    is_active = models.BooleanField(default=False, verbose_name=_('فعال/غیرفعال'))
+    is_active = models.BooleanField(default=True, verbose_name=_('فعال؟'))
     permission = models.CharField(max_length=255, blank=True, null=True, verbose_name=_('دسترسی'))
 
     class Meta:
