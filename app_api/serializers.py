@@ -1,5 +1,4 @@
 from rest_framework import serializers
-
 from django.utils.translation import gettext_lazy as _
 from app_auth.models import User, ManagerModel
 from .models import LabModel, LabResultModel, LabResultCategoryModel, SonographyCenterModel, SonographyResultModel
@@ -53,3 +52,13 @@ class SonographyResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = SonographyResultModel
         fields = '__all__'
+
+
+# class UserPasswordForm(serializers.Serializer):
+#     new_password1 = serializers.CharField(max_length=128, write_only=True, required=True)
+#     new_password2 = serializers.CharField(max_length=128, write_only=True, required=True)
+
+#     def validate(self, data):
+#         if data['new_password1'] != data['new_password2']:
+#             raise serializers.ValidationError({'new_password2': _("باید مقدار دو فیلد برابر باشند.")})
+#         return data

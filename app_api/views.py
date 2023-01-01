@@ -10,7 +10,7 @@ from .serializers import (
     LabSerializer,
     UserSerializer,
     LabResultCategorySerializer,
-    ManagerSerializer
+    ManagerSerializer,
 )
 from .models import (
     SonographyCenterModel,
@@ -214,3 +214,28 @@ class CreateManager(APIView):
             }
             return Response(response_data)
         return Response({'status': 400})
+
+
+# url: /api/v1/user/password/
+# class ChangePassword(APIView):
+
+#     # permission_classes = [AllowAny] #TODO
+
+#     def post(self, request):
+#         if request.user:
+
+#             serializer = UserPasswordForm(data=request.data)
+#             serializer.is_valid(raise_exception=True)
+
+#             request.user.set_password(request.data.get('new_password1'))
+            
+#             response_data =  {
+#                 'msg': _('رمزعبور شما با موفقیت تغییر کرد.'),
+#                 'status': 200
+#             }
+#             return Response(response_data)
+#         return Response({'status': 400})
+
+
+
+
