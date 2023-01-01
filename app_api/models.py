@@ -1,3 +1,4 @@
+import uuid
 from django.utils import timezone
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -5,6 +6,7 @@ from app_auth.models import PatientModel, User
 
 
 class LabModel(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     user = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True, verbose_name=_('کاربر'))
     title = models.CharField(max_length=255, verbose_name=_('نام'))
     code = models.CharField(max_length=255, unique=True, verbose_name=_('کد'))
@@ -23,6 +25,7 @@ class LabModel(models.Model):
 
 
 class LabResultModel(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     category = models.ForeignKey(to='LabResultCategoryModel', on_delete=models.SET_NULL, null=True, verbose_name=_('دسته بندی'))
     patient = models.ForeignKey(to=PatientModel, on_delete=models.SET_NULL, null=True, verbose_name=_('بیمار'))
     lab = models.ForeignKey(to=LabModel, on_delete=models.SET_NULL, null=True, verbose_name=_('آزمایشگاه'))
@@ -40,6 +43,7 @@ class LabResultModel(models.Model):
 
 
 class LabResultCategoryModel(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     title = models.CharField(max_length=255, verbose_name=_('عنوان'))
 
     class Meta:
@@ -52,6 +56,7 @@ class LabResultCategoryModel(models.Model):
 
 
 class SonographyCenterModel(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     user = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True, verbose_name=_('کاربر'))
     title = models.CharField(max_length=255, verbose_name=_('نام'))
     code = models.CharField(max_length=255, unique=True, verbose_name=_('کد'))
@@ -70,6 +75,7 @@ class SonographyCenterModel(models.Model):
 
 
 class SonographyResultModel(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     patient = models.ForeignKey(to=PatientModel, on_delete=models.SET_NULL, null=True, verbose_name=_('بیمار'))
     center = models.ForeignKey(to=SonographyCenterModel, on_delete=models.SET_NULL, null=True, verbose_name=_('مرکز سونوگرافی'))
     result = models.CharField(max_length=255, verbose_name=_('جواب آزمایش'))

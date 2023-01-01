@@ -1,9 +1,11 @@
+import uuid
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
 class User(AbstractUser):
+    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     username = models.CharField(max_length=10, unique=True, verbose_name=_('کدملی'))
     phone = models.CharField(max_length=20, default=0, verbose_name=_('شماره تلفن'))
     permission = models.CharField(max_length=255, blank=True, null=True, verbose_name=_('دسترسی'))
@@ -19,6 +21,7 @@ class User(AbstractUser):
 
 
 class DoctorModel(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     medical_code = models.BigIntegerField(verbose_name=_('کد نظام پزشکی'))
     user = models.OneToOneField(to=User, on_delete=models.SET_NULL, null=True, verbose_name=_('کاربر'))
     is_active = models.BooleanField(default=True, verbose_name=_('فعال؟'))
@@ -37,6 +40,7 @@ class DoctorModel(models.Model):
 
 
 class ManagerModel(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     user = models.OneToOneField(to=User, on_delete=models.SET_NULL, null=True, verbose_name=_('کاربر'))
     is_active = models.BooleanField(default=True, verbose_name=_('فعال؟'))
 
@@ -54,6 +58,7 @@ class ManagerModel(models.Model):
 
 
 class PatientModel(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     username = models.CharField(max_length=10, unique=True, verbose_name=_('کدملی'))
 
     class Meta:
