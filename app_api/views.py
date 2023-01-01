@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.utils.translation import gettext_lazy as _
-from app_auth.models import PatientModel, User, ManagerModel
+from app_auth.models import PatientModel, User, ManagerModel, DoctorModel
 from rest_framework.permissions import AllowAny
 from .serializers import (
     LabResultSerializer, 
@@ -29,6 +29,10 @@ class GetPatientData(APIView):
     def post(self, request):
         code = request.POST.get('code')
         if code:
+
+            if not DoctorModel.objects.filter(user=request.user, is_active=True).exists():
+                return Response({'msg': _('برای نمایش اطلاعات بیمار باید پزشک باشید.'), 'status': 400})
+
             if PatientModel.objects.filter(username=code).exists():
                 patient = PatientModel.objects.get(username=code)
                 lab_res = LabResultModel.objects.filter(patient=patient).all()
@@ -68,6 +72,7 @@ class GetUserData(APIView):
                 'is_lab': is_lab, 
                 'is_doctor': is_doctor, 
                 'is_manager': is_manager, 
+                'is_admin': user.is_superuser, 
                 'status': 200
             }
             return Response(response_data)
@@ -82,8 +87,9 @@ class CreateSonographyCenter(APIView):
     def post(self, request):
         if request.user:
 
-            serializer = SonographyCenterSerializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
+            if not request.user.managermodel_set.filter(is_active=True).exists():
+                if not request.user.is_superuser:
+                    return Response({'msg': _('شما دسترسی لازم را برای ساخت مرکز سونوگرافی ندارید.'), 'status': 400})
 
             new_sonography_center = SonographyCenterModel.objects.create(
                 user=request.user,
@@ -110,6 +116,10 @@ class CreateLab(APIView):
     def post(self, request):
 
         if request.user:
+
+            if not request.user.managermodel_set.filter(is_active=True).exists():
+                if not request.user.is_superuser:
+                    return Response({'msg': _('شما دسترسی لازم را برای ساخت آزمایشگاه ندارید.'), 'status': 400})
 
             serializer = LabSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
@@ -140,6 +150,10 @@ class CreateLabCategory(APIView):
 
         if request.user:
 
+            if not request.user.managermodel_set.filter(is_active=True).exists():
+                if not request.user.is_superuser:
+                    return Response({'msg': _('شما دسترسی لازم را برای ساخت آزمایشگاه ندارید.'), 'status': 400})
+
             serializer = LabResultCategorySerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             
@@ -163,6 +177,9 @@ class CreateManager(APIView):
     def post(self, request):
 
         if request.user:
+
+            if not request.user.is_superuser:
+                return Response({'msg': _('شما دسترسی لازم را برای ساخت آزمایشگاه ندارید.'), 'status': 400})
 
             serializer = ManagerSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
