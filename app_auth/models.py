@@ -23,7 +23,7 @@ class User(AbstractUser):
 class DoctorModel(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     medical_code = models.BigIntegerField(verbose_name=_('کد نظام پزشکی'))
-    user = models.OneToOneField(to=User, on_delete=models.SET_NULL, null=True, verbose_name=_('کاربر'))
+    user = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True, verbose_name=_('کاربر'))
     is_active = models.BooleanField(default=True, verbose_name=_('فعال؟'))
 
     class Meta:
@@ -41,7 +41,7 @@ class DoctorModel(models.Model):
 
 class ManagerModel(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
-    user = models.OneToOneField(to=User, on_delete=models.SET_NULL, null=True, verbose_name=_('کاربر'))
+    user = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True, verbose_name=_('کاربر'))
     is_active = models.BooleanField(default=True, verbose_name=_('فعال؟'))
 
     class Meta:

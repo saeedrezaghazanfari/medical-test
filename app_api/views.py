@@ -30,7 +30,7 @@ class GetPatientData(APIView):
         code = request.POST.get('code')
         if code:
 
-            if not DoctorModel.objects.filter(user=request.user, is_active=True).exists():
+            if not request.user.doctormodel_set.filter(is_active=True).exists():
                 return Response({'msg': _('برای نمایش اطلاعات بیمار باید پزشک باشید.'), 'status': 400})
 
             if PatientModel.objects.filter(username=code).exists():
@@ -91,8 +91,13 @@ class CreateSonographyCenter(APIView):
                 if not request.user.is_superuser:
                     return Response({'msg': _('شما دسترسی لازم را برای ساخت مرکز سونوگرافی ندارید.'), 'status': 400})
 
+            user_created = User.objects.create_user(
+                username=request.POST.get('code'),
+                password=request.POST.get('phone')
+            )
+
             new_sonography_center = SonographyCenterModel.objects.create(
-                user=request.user,
+                user=user_created,
                 title=request.POST.get('title'),
                 code=request.POST.get('code'),
                 pos=request.POST.get('pos'),
@@ -124,8 +129,13 @@ class CreateLab(APIView):
             serializer = LabSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
 
+            user_created = User.objects.create_user(
+                username=request.POST.get('code'),
+                password=request.POST.get('phone')
+            )
+
             new_lab_center = LabModel.objects.create(
-                user=request.user,
+                user=user_created,
                 title=request.POST.get('title'),
                 code=request.POST.get('code'),
                 pos=request.POST.get('pos'),
