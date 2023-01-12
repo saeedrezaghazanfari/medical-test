@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
-from app_auth.models import User, ManagerModel
+from app_auth.models import User, ManagerModel, DoctorModel, PatientModel
 from .models import LabModel, LabResultModel, LabResultCategoryModel, SonographyCenterModel, SonographyResultModel
 
 
@@ -36,6 +36,25 @@ class LabResultSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class LabResultRegisterSerializer(serializers.ModelSerializer):
+    category_title = serializers.CharField()
+    patinet_username = serializers.IntegerField()
+    lab_username = serializers.IntegerField()
+
+    class Meta:
+        model = LabResultModel
+        fields = ['title', 'result', 'category_title', 'patinet_username', 'lab_username']
+
+
+class SonographyResultRegisterSerializer(serializers.ModelSerializer):
+    patinet_username = serializers.IntegerField()
+    sono_username = serializers.IntegerField()
+
+    class Meta:
+        model = SonographyResultModel
+        fields = ['patinet_username', 'sono_username', 'result']
+
+
 class LabResultCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = LabResultCategoryModel
@@ -51,6 +70,19 @@ class SonographyCenterSerializer(serializers.ModelSerializer):
 class SonographyResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = SonographyResultModel
+        fields = '__all__'
+
+
+class DoctorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DoctorModel
+        fields = '__all__'
+
+
+
+class PatientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PatientModel
         fields = '__all__'
 
 

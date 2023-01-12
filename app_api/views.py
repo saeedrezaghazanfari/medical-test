@@ -10,7 +10,11 @@ from .serializers import (
     LabSerializer,
     UserSerializer,
     LabResultCategorySerializer,
+    LabResultRegisterSerializer,
+    SonographyResultRegisterSerializer,
     ManagerSerializer,
+    DoctorSerializer,
+    PatientSerializer
 )
 from .models import (
     SonographyCenterModel,
@@ -24,10 +28,10 @@ from .models import (
 # url: /api/v1/get/patient/data/
 class GetPatientData(APIView):
 
-    # permission_classes = [AllowAny] #TODO
+    # permission_classes = [AllowAny]
 
     def post(self, request):
-        code = request.POST.get('code')
+        code = request.data.get('code')
         if code:
 
             if not request.user.doctormodel_set.filter(is_active=True).exists():
@@ -54,7 +58,7 @@ class GetPatientData(APIView):
 # url: /api/v1/get/user/data/
 class GetUserData(APIView):
 
-    # permission_classes = [AllowAny] #TODO
+    # permission_classes = [AllowAny]
 
     def post(self, request):
         if request.user:
@@ -82,7 +86,7 @@ class GetUserData(APIView):
 # url: /api/v1/create/sonography-center/
 class CreateSonographyCenter(APIView):
 
-    # permission_classes = [AllowAny] #TODO
+    # permission_classes = [AllowAny]
 
     def post(self, request):
         if request.user:
@@ -92,17 +96,17 @@ class CreateSonographyCenter(APIView):
                     return Response({'msg': _('شما دسترسی لازم را برای ساخت مرکز سونوگرافی ندارید.'), 'status': 400})
 
             user_created = User.objects.create_user(
-                username=request.POST.get('code'),
-                password=request.POST.get('phone')
+                username=request.data.get('code'),
+                password=request.data.get('phone')
             )
 
             new_sonography_center = SonographyCenterModel.objects.create(
                 user=user_created,
-                title=request.POST.get('title'),
-                code=request.POST.get('code'),
-                pos=request.POST.get('pos'),
-                phone=request.POST.get('phone'),
-                permission=request.POST.get('permission'),
+                title=request.data.get('title'),
+                code=request.data.get('code'),
+                pos=request.data.get('pos'),
+                phone=request.data.get('phone'),
+                permission=request.data.get('permission'),
             )
             
             response_data =  { 
@@ -116,7 +120,7 @@ class CreateSonographyCenter(APIView):
 # url: /api/v1/create/lab/
 class CreateLab(APIView):
 
-    # permission_classes = [AllowAny] #TODO
+    # permission_classes = [AllowAny]
 
     def post(self, request):
 
@@ -130,17 +134,17 @@ class CreateLab(APIView):
             serializer.is_valid(raise_exception=True)
 
             user_created = User.objects.create_user(
-                username=request.POST.get('code'),
-                password=request.POST.get('phone')
+                username=request.data.get('code'),
+                password=request.data.get('phone')
             )
 
             new_lab_center = LabModel.objects.create(
                 user=user_created,
-                title=request.POST.get('title'),
-                code=request.POST.get('code'),
-                pos=request.POST.get('pos'),
-                phone=request.POST.get('phone'),
-                permission=request.POST.get('permission'),
+                title=request.data.get('title'),
+                code=request.data.get('code'),
+                pos=request.data.get('pos'),
+                phone=request.data.get('phone'),
+                permission=request.data.get('permission'),
             )
             
             response_data =  { 
@@ -154,7 +158,7 @@ class CreateLab(APIView):
 # url: /api/v1/create/lab-category/
 class CreateLabCategory(APIView):
 
-    # permission_classes = [AllowAny] #TODO
+    # permission_classes = [AllowAny]
 
     def post(self, request):
 
@@ -168,7 +172,7 @@ class CreateLabCategory(APIView):
             serializer.is_valid(raise_exception=True)
             
             new_lab_category = LabResultCategoryModel.objects.create(
-                title=request.POST.get('title'),
+                title=request.data.get('title'),
             )
             
             response_data =  { 
@@ -182,7 +186,7 @@ class CreateLabCategory(APIView):
 # url: /api/v1/create/manager/
 class CreateManager(APIView):
 
-    # permission_classes = [AllowAny] #TODO
+    # permission_classes = [AllowAny]
 
     def post(self, request):
 
@@ -195,13 +199,13 @@ class CreateManager(APIView):
             serializer.is_valid(raise_exception=True)
             
             user = User.objects.create_user(
-                username=request.POST.get('username'),
-                password=request.POST.get('password'),
-                first_name=request.POST.get('first_name'),
-                last_name=request.POST.get('last_name'),
-                email=request.POST.get('email'),
-                phone=request.POST.get('phone'),
-                permission=request.POST.get('permission'),
+                username=request.data.get('username'),
+                password=request.data.get('password'),
+                first_name=request.data.get('first_name'),
+                last_name=request.data.get('last_name'),
+                email=request.data.get('email'),
+                phone=request.data.get('phone'),
+                permission=request.data.get('permission'),
             )
 
             ManagerModel.objects.create(
@@ -219,7 +223,7 @@ class CreateManager(APIView):
 # url: /api/v1/user/password/
 # class ChangePassword(APIView):
 
-#     # permission_classes = [AllowAny] #TODO
+#     # permission_classes = [AllowAny]
 
 #     def post(self, request):
 #         if request.user:
@@ -238,4 +242,154 @@ class CreateManager(APIView):
 
 
 
+# url: /api/v1/create/doctor/
+class CreateDoctor(APIView):
 
+    # permission_classes = [AllowAny]
+
+    def post(self, request):
+        if request.user:
+
+            if not request.user.is_superuser and not request.user.managermodel_set.filter(is_active=True).exists():
+                return Response({'msg': _('شما دسترسی لازم را برای ساخت پزشک ندارید.'), 'status': 400})
+
+            serializer = DoctorSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            
+            user = User.objects.create_user(
+                username=request.data.get('username'),
+                password=request.data.get('password'),
+                first_name=request.data.get('first_name'),
+                last_name=request.data.get('last_name'),
+                email=request.data.get('email'),
+                phone=request.data.get('phone'),
+                permission=request.data.get('permission'),
+            )
+
+            DoctorModel.objects.create(
+                user=user,
+                is_active=True,
+                medical_code=request.data.get('medical_code'),
+            )
+            
+            response_data =  { 
+                'status': 200
+            }
+            return Response(response_data)
+        return Response({'status': 400})
+
+
+# url: /api/v1/create/patient/
+class CreatePatient(APIView):
+
+    # permission_classes = [AllowAny]
+
+    def post(self, request):
+        if request.user:
+
+            if not request.user.is_superuser and \
+                not request.user.managermodel_set.filter(is_active=True).exists() and \
+                not request.user.labmodel_set.filter(is_active=True).exists() and \
+                not request.user.sonographycentermodel_set.filter(is_active=True).exists():
+                return Response({'msg': _('شما دسترسی لازم را برای ساخت بیمار ندارید.'), 'status': 400})
+
+            serializer = PatientSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+
+            PatientModel.objects.create(
+                username=request.data.get('username')
+            )
+
+            response_data =  { 
+                'status': 200
+            }
+            return Response(response_data)
+        return Response({'status': 400})
+
+
+# url: /api/v1/create/patient/lab/
+class PatientLab(APIView):
+
+    # permission_classes = [AllowAny]
+
+    def post(self, request):
+        if request.user:
+
+            if not request.user.is_superuser and not request.user.labmodel_set.filter(is_active=True).exists():
+                return Response({'msg': _('شما دسترسی لازم را برای ثبت آزمایش بیمار ندارید.'), 'status': 400})
+
+            serializer = LabResultRegisterSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+
+            category = None
+            patient = None
+            lab = None
+
+            if LabResultCategoryModel.objects.filter(title=request.data.get('category_title')).exists():
+                category = LabResultCategoryModel.objects.get(title=request.data.get('category_title'))
+            else:
+                return Response({'status': 400})
+
+            if PatientModel.objects.filter(username=request.data.get('patinet_username')).exists():
+                patient = PatientModel.objects.get(username=request.data.get('patinet_username'))
+            else:
+                return Response({'status': 400})
+
+            if LabModel.objects.filter(code=request.data.get('lab_username')).exists():
+                lab = LabModel.objects.get(code=request.data.get('lab_username'))
+            else:
+                return Response({'status': 400})
+
+            LabResultModel.objects.create(
+                category=category,
+                patient=patient,
+                lab=lab,
+                title=request.data.get('title'),
+                result=request.data.get('result')
+            )
+
+            response_data =  { 
+                'status': 200
+            }
+            return Response(response_data)
+        return Response({'status': 400})
+
+
+# url: /api/v1/create/patient/sonography/
+class PatientSonography(APIView):
+
+    # permission_classes = [AllowAny]
+
+    def post(self, request):
+        if request.user:
+
+            if not request.user.is_superuser and not request.user.sonographycentermodel_set.filter(is_active=True).exists():
+                return Response({'msg': _('شما دسترسی لازم را برای ثبت سونوگرافی بیمار ندارید.'), 'status': 400})
+
+            serializer = SonographyResultRegisterSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+
+            patient = None
+            sono = None
+
+            if PatientModel.objects.filter(username=request.data.get('patinet_username')).exists():
+                patient = PatientModel.objects.get(username=request.data.get('patinet_username'))
+            else:
+                return Response({'status': 400})
+
+            if SonographyCenterModel.objects.filter(code=request.data.get('sono_username')).exists():
+                sono = SonographyCenterModel.objects.get(code=request.data.get('sono_username'))
+            else:
+                return Response({'status': 400})
+
+            SonographyResultModel.objects.create(
+                patient=patient,
+                center=sono,
+                result=request.data.get('result')
+            )
+
+            response_data =  { 
+                'status': 200
+            }
+            return Response(response_data)
+        return Response({'status': 400})

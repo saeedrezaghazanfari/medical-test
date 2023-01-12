@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from app_auth.models import PatientModel, User
+from translated_fields import TranslatedField
 
 
 class LabModel(models.Model):
@@ -44,7 +45,7 @@ class LabResultModel(models.Model):
 
 class LabResultCategoryModel(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
-    title = models.CharField(max_length=255, verbose_name=_('عنوان'))
+    title = TranslatedField(models.CharField(max_length=255, verbose_name=_('عنوان')))
 
     class Meta:
         ordering = ['-id']
