@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.utils.translation import gettext_lazy as _
 from app_auth.models import PatientModel, User, ManagerModel, DoctorModel
-from rest_framework.permissions import AllowAny
+# from rest_framework.permissions import AllowAny
 from .serializers import (
     LabResultSerializer, 
     SonographyResultSerializer, 
@@ -95,19 +95,28 @@ class CreateSonographyCenter(APIView):
                 if not request.user.is_superuser:
                     return Response({'msg': _('شما دسترسی لازم را برای ساخت مرکز سونوگرافی ندارید.'), 'status': 400})
 
-            user_created = User.objects.create_user(
-                username=request.data.get('code'),
-                password=request.data.get('phone')
-            )
+            user_created = None
+            new_sonography_center = None
 
-            new_sonography_center = SonographyCenterModel.objects.create(
-                user=user_created,
-                title=request.data.get('title'),
-                code=request.data.get('code'),
-                pos=request.data.get('pos'),
-                phone=request.data.get('phone'),
-                permission=request.data.get('permission'),
-            )
+            if not User.objects.filter(username=request.data.get('code')).exists():
+                user_created = User.objects.create_user(
+                    username=request.data.get('code'),
+                    password=request.data.get('phone')
+                )
+            else:
+                user_created =  User.objects.get(username=request.data.get('code'))
+
+            if not SonographyCenterModel.objects.filter(code=request.data.get('code')).exists():
+                new_sonography_center = SonographyCenterModel.objects.create(
+                    user=user_created,
+                    title=request.data.get('title'),
+                    code=request.data.get('code'),
+                    pos=request.data.get('pos'),
+                    phone=request.data.get('phone'),
+                    permission=request.data.get('permission'),
+                )
+            else:
+                return Response({'status': 400})
             
             response_data =  { 
                 'new_sono_center': SonographyCenterSerializer(new_sonography_center).data,
@@ -133,19 +142,28 @@ class CreateLab(APIView):
             serializer = LabSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
 
-            user_created = User.objects.create_user(
-                username=request.data.get('code'),
-                password=request.data.get('phone')
-            )
+            user_created = None
+            new_lab_center = None
 
-            new_lab_center = LabModel.objects.create(
-                user=user_created,
-                title=request.data.get('title'),
-                code=request.data.get('code'),
-                pos=request.data.get('pos'),
-                phone=request.data.get('phone'),
-                permission=request.data.get('permission'),
-            )
+            if not User.objects.filter(username=request.data.get('code')).exists():
+                user_created = User.objects.create_user(
+                    username=request.data.get('code'),
+                    password=request.data.get('phone')
+                )
+            else:
+                user_created =  User.objects.get(username=request.data.get('code'))
+
+            if not LabModel.objects.filter(code=request.data.get('code')).exists():
+                new_lab_center = LabModel.objects.create(
+                    user=user_created,
+                    title=request.data.get('title'),
+                    code=request.data.get('code'),
+                    pos=request.data.get('pos'),
+                    phone=request.data.get('phone'),
+                    permission=request.data.get('permission'),
+                )
+            else:
+                return Response({'status': 400})
             
             response_data =  { 
                 'new_lab_center': LabSerializer(new_lab_center).data,
@@ -170,10 +188,15 @@ class CreateLabCategory(APIView):
 
             serializer = LabResultCategorySerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
+
+            new_lab_category = None
             
-            new_lab_category = LabResultCategoryModel.objects.create(
-                title=request.data.get('title'),
-            )
+            if not LabResultCategoryModel.objects.filter(title=request.data.get('title')).exists():
+                new_lab_category = LabResultCategoryModel.objects.create(
+                    title=request.data.get('title'),
+                )
+            else:
+                return Response({'status': 400})
             
             response_data =  { 
                 'new_lab_category': LabResultCategorySerializer(new_lab_category).data,
@@ -197,21 +220,27 @@ class CreateManager(APIView):
 
             serializer = ManagerSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            
-            user = User.objects.create_user(
-                username=request.data.get('username'),
-                password=request.data.get('password'),
-                first_name=request.data.get('first_name'),
-                last_name=request.data.get('last_name'),
-                email=request.data.get('email'),
-                phone=request.data.get('phone'),
-                permission=request.data.get('permission'),
-            )
 
-            ManagerModel.objects.create(
-                user=user,
-                is_active=True
-            )
+            user = None
+
+            if User.objects.filter(username=request.data.get('username')).exists():
+                user = User.objects.get(username=request.data.get('username'))
+            else:
+                user = User.objects.create_user(
+                    username=request.data.get('username'),
+                    password=request.data.get('password'),
+                    first_name=request.data.get('first_name'),
+                    last_name=request.data.get('last_name'),
+                    email=request.data.get('email'),
+                    phone=request.data.get('phone'),
+                    permission=request.data.get('permission'),
+                )
+
+            if not ManagerModel.objects.filter(user=user).exists():
+                ManagerModel.objects.create(
+                    user=user,
+                    is_active=True
+                )
             
             response_data =  { 
                 'status': 200
@@ -255,22 +284,28 @@ class CreateDoctor(APIView):
 
             serializer = DoctorSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            
-            user = User.objects.create_user(
-                username=request.data.get('username'),
-                password=request.data.get('password'),
-                first_name=request.data.get('first_name'),
-                last_name=request.data.get('last_name'),
-                email=request.data.get('email'),
-                phone=request.data.get('phone'),
-                permission=request.data.get('permission'),
-            )
 
-            DoctorModel.objects.create(
-                user=user,
-                is_active=True,
-                medical_code=request.data.get('medical_code'),
-            )
+            user = None
+
+            if User.objects.filter(username=request.data.get('username')).exists():
+                user = User.objects.get(username=request.data.get('username'))
+            else:
+                user = User.objects.create_user(
+                    username=request.data.get('username'),
+                    password=request.data.get('password'),
+                    first_name=request.data.get('first_name'),
+                    last_name=request.data.get('last_name'),
+                    email=request.data.get('email'),
+                    phone=request.data.get('phone'),
+                    permission=request.data.get('permission'),
+                )
+
+            if not DoctorModel.objects.filter(user=user).exists():
+                DoctorModel.objects.create(
+                    user=user,
+                    is_active=True,
+                    medical_code=request.data.get('medical_code'),
+                )
             
             response_data =  { 
                 'status': 200
@@ -296,9 +331,10 @@ class CreatePatient(APIView):
             serializer = PatientSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
 
-            PatientModel.objects.create(
-                username=request.data.get('username')
-            )
+            if not PatientModel.objects.filter(username=request.data.get('username')).exists():
+                PatientModel.objects.create(
+                    username=request.data.get('username')
+                )
 
             response_data =  { 
                 'status': 200
