@@ -1,6 +1,7 @@
 import uuid
 from django.utils import timezone
 from django.db import models
+from django.utils.translation import get_language
 from django.utils.translation import gettext_lazy as _
 from app_auth.models import PatientModel, User
 from translated_fields import TranslatedField
@@ -53,8 +54,10 @@ class LabResultCategoryModel(models.Model):
         verbose_name_plural = _('دسته بندی آزمایش ها')
 
     def __str__(self):
-        return str(self.title)
-
+        if get_language() == 'fa':
+            return str(self.title_fa)
+        elif get_language() == 'en':
+            return str(self.title_en)
 
 class SonographyCenterModel(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
@@ -73,6 +76,32 @@ class SonographyCenterModel(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class LabPWModel(models.Model):
+    lab = models.ForeignKey(to=LabModel, on_delete=models.SET_NULL, null=True, verbose_name=_('آزمایشگاه'))
+    encode_pw = models.TextField(verbose_name=_('رمزعبور'))
+
+    class Meta:
+        ordering = ['-id']
+        verbose_name = _('رمزعبور مرکز آزمایشگاه')
+        verbose_name_plural = _('رمز عبور های مراکز آزمایشگاه')
+
+    def __str__(self):
+        return self.lab.title
+
+
+class SonographyPWModel(models.Model):
+    sono = models.ForeignKey(to=SonographyCenterModel, on_delete=models.SET_NULL, null=True, verbose_name=_('سونوگرافی'))
+    encode_pw = models.TextField(verbose_name=_('رمزعبور'))
+
+    class Meta:
+        ordering = ['-id']
+        verbose_name = _('رمزعبور مرکز سونوگرافی')
+        verbose_name_plural = _('رمز عبور های مراکز سونوگرافی')
+
+    def __str__(self):
+        return self.sono.title
 
 
 class SonographyResultModel(models.Model):

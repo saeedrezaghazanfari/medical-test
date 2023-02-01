@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.utils.translation import gettext_lazy as _
 from app_auth.models import PatientModel, User, ManagerModel, DoctorModel
-# from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny
 from .serializers import (
     LabResultSerializer, 
     SonographyResultSerializer, 
@@ -21,8 +21,11 @@ from .models import (
     LabModel,
     LabResultCategoryModel,
     LabResultModel, 
-    SonographyResultModel
+    SonographyResultModel,
+    SonographyPWModel,
+    LabPWModel
 )
+from extentions.utils import random_code, encode_str, decode_str
 
 
 # url: /api/v1/get/patient/data/
@@ -97,11 +100,12 @@ class CreateSonographyCenter(APIView):
 
             user_created = None
             new_sonography_center = None
+            created_password = random_code()
 
             if not User.objects.filter(username=request.data.get('code')).exists():
                 user_created = User.objects.create_user(
                     username=request.data.get('code'),
-                    password=request.data.get('phone')
+                    password=created_password
                 )
             else:
                 user_created =  User.objects.get(username=request.data.get('code'))
@@ -115,11 +119,17 @@ class CreateSonographyCenter(APIView):
                     phone=request.data.get('phone'),
                     permission=request.data.get('permission'),
                 )
+
+                encoded_pw = new_sonography_center.sonographypwmodel_set.create(
+                    encode_pw=encode_str(created_password)
+                )
+
             else:
                 return Response({'status': 400})
             
             response_data =  { 
                 'new_sono_center': SonographyCenterSerializer(new_sonography_center).data,
+                'password': decode_str(encoded_pw.encode_pw),
                 'status': 200
             }
             return Response(response_data)
@@ -144,14 +154,15 @@ class CreateLab(APIView):
 
             user_created = None
             new_lab_center = None
+            created_password = random_code()
 
             if not User.objects.filter(username=request.data.get('code')).exists():
                 user_created = User.objects.create_user(
                     username=request.data.get('code'),
-                    password=request.data.get('phone')
+                    password=created_password
                 )
             else:
-                user_created =  User.objects.get(username=request.data.get('code'))
+                user_created = User.objects.get(username=request.data.get('code'))
 
             if not LabModel.objects.filter(code=request.data.get('code')).exists():
                 new_lab_center = LabModel.objects.create(
@@ -162,11 +173,17 @@ class CreateLab(APIView):
                     phone=request.data.get('phone'),
                     permission=request.data.get('permission'),
                 )
+
+                encoded_pw = new_lab_center.labpwmodel_set.create(
+                    encode_pw=encode_str(created_password)
+                )
+
             else:
                 return Response({'status': 400})
             
             response_data =  { 
                 'new_lab_center': LabSerializer(new_lab_center).data,
+                'password': decode_str(encoded_pw.encode_pw),
                 'status': 200
             }
             return Response(response_data)
