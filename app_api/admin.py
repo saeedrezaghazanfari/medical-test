@@ -4,9 +4,7 @@ from .models import (
     LabResultModel, 
     LabResultCategoryModel, 
     SonographyCenterModel, 
-    SonographyResultModel,
-    LabPWModel,
-    SonographyPWModel
+    SonographyResultModel
 )
 
 
@@ -16,6 +14,3 @@ admin.site.register(LabResultCategoryModel)
 
 admin.site.register(SonographyCenterModel)
 admin.site.register(SonographyResultModel)
-
-admin.site.register(LabPWModel)
-admin.site.register(SonographyPWModel)

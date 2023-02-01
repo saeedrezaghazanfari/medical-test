@@ -71,13 +71,13 @@ this url for get user labels, if you dont use 'permission' parameter.
 ```
 
 
-POST: send (title: title of sono center) (code: code of sono center) (pos: position of sono center) (phone) (permission)
+POST: send (title: title of sono center) (code: code of sono center) (password) (pos: position of sono center) (phone) (permission)
 ```
 /fa/api/v1/create/sonography-center/
 ```
 
 
-POST: send (title: title of lab center) (code: code of lab center) (pos: position of lab center) (phone) (permission)
+POST: send (title: title of lab center) (code: code of lab center) (password) (pos: position of lab center) (phone) (permission)
 ```
 /fa/api/v1/create/lab/
 ```

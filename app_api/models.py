@@ -78,32 +78,6 @@ class SonographyCenterModel(models.Model):
         return self.title
 
 
-class LabPWModel(models.Model):
-    lab = models.ForeignKey(to=LabModel, on_delete=models.SET_NULL, null=True, verbose_name=_('آزمایشگاه'))
-    encode_pw = models.TextField(verbose_name=_('رمزعبور'))
-
-    class Meta:
-        ordering = ['-id']
-        verbose_name = _('رمزعبور مرکز آزمایشگاه')
-        verbose_name_plural = _('رمز عبور های مراکز آزمایشگاه')
-
-    def __str__(self):
-        return self.lab.title
-
-
-class SonographyPWModel(models.Model):
-    sono = models.ForeignKey(to=SonographyCenterModel, on_delete=models.SET_NULL, null=True, verbose_name=_('سونوگرافی'))
-    encode_pw = models.TextField(verbose_name=_('رمزعبور'))
-
-    class Meta:
-        ordering = ['-id']
-        verbose_name = _('رمزعبور مرکز سونوگرافی')
-        verbose_name_plural = _('رمز عبور های مراکز سونوگرافی')
-
-    def __str__(self):
-        return self.sono.title
-
-
 class SonographyResultModel(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     patient = models.ForeignKey(to=PatientModel, on_delete=models.SET_NULL, null=True, verbose_name=_('بیمار'))
