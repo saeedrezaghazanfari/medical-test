@@ -57,9 +57,15 @@ POST: send (refresh_token)
 ```
 
 
-POST: send (code: this is patient international code)
+POST: send (code: this is patient international code) (from_data: optional) (to_data: optional)
 ```
-/fa/api/v1/get/patient/data/
+/fa/api/v1/patient/results/lab/
+```
+
+
+POST: send (code: this is patient international code) (from_data: optional) (to_data: optional)
+```
+/fa/api/v1/patient/results/sono/
 ```
 
 

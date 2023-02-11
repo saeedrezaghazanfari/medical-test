@@ -1,5 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from app_auth.models import PatientModel, User, ManagerModel, DoctorModel
 # from rest_framework.permissions import AllowAny
@@ -25,34 +26,60 @@ from .models import (
 )
 
 
-# url: /api/v1/get/patient/data/
-class GetPatientData(APIView):
+# url: /api/v1/patient/results/sono/
+class GetPatientSono(APIView):
 
     # permission_classes = [AllowAny]
 
     def post(self, request):
-        code = request.data.get('code')
-        if code:
 
-            if not request.user.doctormodel_set.filter(is_active=True).exists():
-                return Response({'msg': _('برای نمایش اطلاعات بیمار باید پزشک باشید.'), 'status': 400})
-
-            if PatientModel.objects.filter(username=code).exists():
-                patient = PatientModel.objects.get(username=code)
-                lab_res = LabResultModel.objects.filter(patient=patient).all()
-                sonography_res = SonographyResultModel.objects.filter(patient=patient).all()
-                
-                lab_res_serializer = LabResultSerializer(lab_res, many=True)
-                sonography_res_serializer  = SonographyResultSerializer(sonography_res, many=True)
-                
-                response_data =  {
-                    'lab_res': lab_res_serializer.data, 
-                    'sonography_res': sonography_res_serializer.data, 
-                    'status': 200
-                }
-                return Response(response_data)
+        if not request.data.get('code'):
             return Response({'status': 400})
-        return Response({'status': 400})
+
+        patient = get_object_or_404(PatientModel, username=request.data.get('code'))
+        sonography_res = list()
+
+        if request.data.get('from_data') and request.data.get('to_data'):
+            from_data = request.data.get('from_data')
+            to_data = request.data.get('to_data')
+            sonography_res = SonographyResultModel.objects.filter(patient=patient, data__gte=from_data, data__lte=to_data).all()
+
+        else:
+            sonography_res = SonographyResultModel.objects.filter(patient=patient).all()
+        
+        response_data =  {
+            'sonography_res': SonographyResultSerializer(sonography_res, many=True).data, 
+            'status': 200
+        }
+        return Response(response_data)
+    
+
+# url: /api/v1/patient/results/lab/
+class GetPatientLab(APIView):
+
+    # permission_classes = [AllowAny]
+
+    def post(self, request):
+
+        if not request.data.get('code'):
+            return Response({'status': 400})
+
+        patient = get_object_or_404(PatientModel, username=request.data.get('code'))
+        lab_res = list()
+
+        if request.data.get('from_data') and request.data.get('to_data'):
+            from_data = request.data.get('from_data')
+            to_data = request.data.get('to_data')
+            lab_res = LabResultModel.objects.filter(patient=patient, data__gte=from_data, data__lte=to_data).all()
+
+        else:
+            lab_res = LabResultModel.objects.filter(patient=patient).all()
+
+        response_data =  {
+            'lab_res': LabResultSerializer(lab_res, many=True).data, 
+            'status': 200
+        }
+        return Response(response_data)
 
 
 # url: /api/v1/get/user/data/
