@@ -101,7 +101,8 @@ class CreateSonographyCenter(APIView):
             if not User.objects.filter(username=request.data.get('code')).exists():
                 user_created = User.objects.create_user(
                     username=request.data.get('code'),
-                    password=request.data.get('password')
+                    password=request.data.get('password'),
+                    permission=request.data.get('permission'),
                 )
             else:
                 user_created =  User.objects.get(username=request.data.get('code'))
@@ -113,7 +114,6 @@ class CreateSonographyCenter(APIView):
                     code=request.data.get('code'),
                     pos=request.data.get('pos'),
                     phone=request.data.get('phone'),
-                    permission=request.data.get('permission'),
                 )
 
             else:
@@ -149,7 +149,8 @@ class CreateLab(APIView):
             if not User.objects.filter(username=request.data.get('code')).exists():
                 user_created = User.objects.create_user(
                     username=request.data.get('code'),
-                    password=request.data.get('password')
+                    password=request.data.get('password'),
+                    permission=request.data.get('permission'),
                 )
             else:
                 user_created = User.objects.get(username=request.data.get('code'))
@@ -161,7 +162,6 @@ class CreateLab(APIView):
                     code=request.data.get('code'),
                     pos=request.data.get('pos'),
                     phone=request.data.get('phone'),
-                    permission=request.data.get('permission'),
                 )
 
             else:
