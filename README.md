@@ -89,7 +89,7 @@ POST: send (title: title of lab center) (code: code of lab center) (password) (p
 ```
 
 
-POST: send (title: title of lab category)
+POST: send (title_fa: title of lab category) (title_en: title of lab category)
 ```
 /fa/api/v1/create/lab-category/
 ```

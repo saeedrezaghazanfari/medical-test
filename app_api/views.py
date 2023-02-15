@@ -220,9 +220,10 @@ class CreateLabCategory(APIView):
 
             new_lab_category = None
             
-            if not LabResultCategoryModel.objects.filter(title=request.data.get('title')).exists():
+            if not LabResultCategoryModel.objects.filter(title_fa=request.data.get('title_fa')).exists():
                 new_lab_category = LabResultCategoryModel.objects.create(
-                    title=request.data.get('title'),
+                    title_fa=request.data.get('title_fa'),
+                    title_en=request.data.get('title_en'),
                 )
             else:
                 return Response({'status': 400})
