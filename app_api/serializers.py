@@ -79,11 +79,22 @@ class DoctorSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
 class PatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientModel
         fields = '__all__'
+
+
+class SonographyCenterDATASerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SonographyCenterModel
+        exclude = ['user']
+
+
+class LabDATASerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LabModel
+        exclude = ['user']
 
 
 # class UserPasswordForm(serializers.Serializer):

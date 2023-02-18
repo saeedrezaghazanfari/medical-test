@@ -15,7 +15,9 @@ from .serializers import (
     SonographyResultRegisterSerializer,
     ManagerSerializer,
     DoctorSerializer,
-    PatientSerializer
+    PatientSerializer,
+    LabDATASerializer,
+    SonographyCenterDATASerializer,
 )
 from .models import (
     SonographyCenterModel,
@@ -98,7 +100,6 @@ class GetUserData(APIView):
             is_manager = user.managermodel_set.filter(is_active=True).exists()
             
             response_data =  {
-                'data': user_serializer.data,
                 'is_sono': is_sono, 
                 'is_lab': is_lab, 
                 'is_doctor': is_doctor, 
@@ -106,6 +107,25 @@ class GetUserData(APIView):
                 'is_admin': user.is_superuser, 
                 'status': 200
             }
+
+            if is_sono:
+                sono_serializer = SonographyCenterDATASerializer(user.sonographycentermodel_set.first())
+                response_data['data'] = sono_serializer.data
+
+            elif is_lab:
+                lab_serializer = LabDATASerializer(user.labmodel_set.first())
+                response_data['data'] = lab_serializer.data
+
+            elif is_doctor:
+                response_data['medical_code'] = user.doctormodel_set.first().medical_code
+                response_data['data'] = user_serializer.data
+
+            elif is_manager:
+                response_data['data'] = user_serializer.data
+
+            else:
+                response_data['data'] = user_serializer.data
+
             return Response(response_data)
         return Response({'status': 400})
 
