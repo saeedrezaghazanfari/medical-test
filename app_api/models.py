@@ -80,6 +80,7 @@ class SonographyResultModel(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     patient = models.ForeignKey(to=PatientModel, on_delete=models.SET_NULL, null=True, verbose_name=_('بیمار'))
     center = models.ForeignKey(to=SonographyCenterModel, on_delete=models.SET_NULL, null=True, verbose_name=_('مرکز سونوگرافی'))
+    title = models.CharField(max_length=255, null=True, verbose_name=_('عنوان آزمایش'))
     result = models.CharField(max_length=255, verbose_name=_('جواب آزمایش'))
     date = models.DateTimeField(default=timezone.now, verbose_name=_('زمان ثبت نتیجه'))
 
