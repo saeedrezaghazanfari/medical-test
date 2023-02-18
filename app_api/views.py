@@ -82,6 +82,21 @@ class GetPatientLab(APIView):
             'status': 200
         }
         return Response(response_data)
+    
+
+# url: /api/v1/patient/exists/
+class IsPatient(APIView):
+
+    # permission_classes = [AllowAny]
+
+    def post(self, request):
+
+        if not request.data.get('code'):
+            return Response({'status': 400})
+
+        if PatientModel.objects.filter(username=request.data.get('code')).exists():
+            return Response({'status': 200, 'is_exists': True})
+        return Response({'status': 200, 'is_exists': False})
 
 
 # url: /api/v1/get/user/data/

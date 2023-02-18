@@ -69,6 +69,12 @@ POST: send (code: this is patient international code) (from_data: optional) (to_
 ```
 
 
+POST: send (code: this is national code of patient)
+```
+/fa/api/v1/patient/exists/
+```
+
+
 POST: dont need to any data, just send request (you must have valid access token)
 
 this url for get user labels, if you dont use 'permission' parameter.
