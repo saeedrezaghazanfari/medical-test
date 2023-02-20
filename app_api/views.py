@@ -11,6 +11,7 @@ from .serializers import (
     LabSerializer,
     UserSerializer,
     LabResultCategorySerializer,
+    LabResultSUBCategorySerializer,
     LabResultRegisterSerializer,
     SonographyResultRegisterSerializer,
     ManagerSerializer,
@@ -23,6 +24,7 @@ from .models import (
     SonographyCenterModel,
     LabModel,
     LabResultCategoryModel,
+    LabResultSUBCategoryModel,
     LabResultModel, 
     SonographyResultModel,
 )
@@ -248,7 +250,7 @@ class CreateLabCategory(APIView):
 
             if not request.user.managermodel_set.filter(is_active=True).exists():
                 if not request.user.is_superuser:
-                    return Response({'msg': _('شما دسترسی لازم را برای ساخت آزمایشگاه ندارید.'), 'status': 400})
+                    return Response({'msg': _('شما دسترسی لازم را برای ثبت دسته بندی آزمایش ندارید.'), 'status': 400})
 
             serializer = LabResultCategorySerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
@@ -265,6 +267,39 @@ class CreateLabCategory(APIView):
             
             response_data =  { 
                 'new_lab_category': LabResultCategorySerializer(new_lab_category).data,
+                'status': 200
+            }
+            return Response(response_data)
+        return Response({'status': 400})
+
+
+# url: /api/v1/create/lab-subcategory/
+class CreateLabSUBCategory(APIView):
+
+    # permission_classes = [AllowAny]
+
+    def post(self, request):
+
+        if request.user:
+
+            if not request.user.managermodel_set.filter(is_active=True).exists():
+                if not request.user.is_superuser:
+                    return Response({'msg': _('شما دسترسی لازم را برای ثبت زیر دسته بندی آزمایش ندارید.'), 'status': 400})
+
+            serializer = LabResultSUBCategorySerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+
+            new_lab_subcategory = None
+            
+            if not LabResultSUBCategoryModel.objects.filter(title=request.data.get('title')).exists():
+                new_lab_subcategory = LabResultSUBCategoryModel.objects.create(
+                    title=request.data.get('title'),
+                )
+            else:
+                return Response({'status': 400})
+            
+            response_data =  { 
+                'new_lab_subcategory': LabResultSUBCategorySerializer(new_lab_subcategory).data,
                 'status': 200
             }
             return Response(response_data)
@@ -440,9 +475,14 @@ class PatientLab(APIView):
                 lab = LabModel.objects.get(code=request.data.get('lab_username'))
             else:
                 return Response({'status': 400})
+            
+            sub_category = None
+            if request.data.get('sub_category_title') and LabResultSUBCategoryModel.objects.filter(title=request.data.get('sub_category_title')).exists():
+                sub_category = LabResultSUBCategoryModel.objects.get(title=request.data.get('sub_category_title'))
 
             LabResultModel.objects.create(
                 category=category,
+                sub_category=sub_category,
                 patient=patient,
                 lab=lab,
                 title=request.data.get('title'),

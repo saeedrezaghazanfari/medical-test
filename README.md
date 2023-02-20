@@ -100,6 +100,10 @@ POST: send (title_fa: title of lab category) (title_en: title of lab category)
 /fa/api/v1/create/lab-category/
 ```
 
+POST: send (title: title of lab category)
+```
+/fa/api/v1/create/lab-subcategory/
+```
 
 POST: send (username: manager national code) (password) (first_name) (last_name) (email) (phone) (permission)
 ```
@@ -119,7 +123,7 @@ POST: send (username: patient national code)
 ```
 
 
-POST: send (category_title: enter title of lab category) (patinet_username: international code of patient) (lab_username: code of lab) (title) (result: result of patient lab)
+POST: send (category_title: enter title of lab category) (sub_category_title: enter subcategory title of lab category - optional ) (patinet_username: international code of patient) (lab_username: code of lab) (title) (result: result of patient lab)
 ```
 /fa/api/v1/create/patient/lab/
 ```

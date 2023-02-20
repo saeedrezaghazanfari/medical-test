@@ -28,6 +28,7 @@ class LabModel(models.Model):
 class LabResultModel(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     category = models.ForeignKey(to='LabResultCategoryModel', on_delete=models.SET_NULL, null=True, verbose_name=_('دسته بندی'))
+    sub_category = models.ForeignKey(to='LabResultSUBCategoryModel', on_delete=models.SET_NULL, blank=True, null=True, verbose_name=_('زیر دسته بندی'))
     patient = models.ForeignKey(to=PatientModel, on_delete=models.SET_NULL, null=True, verbose_name=_('بیمار'))
     lab = models.ForeignKey(to=LabModel, on_delete=models.SET_NULL, null=True, verbose_name=_('آزمایشگاه'))
     title = models.CharField(max_length=255, verbose_name=_('عنوان آزمایش'))
@@ -57,6 +58,20 @@ class LabResultCategoryModel(models.Model):
             return str(self.title_fa)
         elif get_language() == 'en':
             return str(self.title_en)
+
+
+class LabResultSUBCategoryModel(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
+    title = models.CharField(max_length=255, verbose_name=_('عنوان'))
+
+    class Meta:
+        ordering = ['-id']
+        verbose_name = _('زیر دسته بندی آزمایش')
+        verbose_name_plural = _('زیر دسته بندی آزمایش ها')
+
+    def __str__(self):
+        return self.title
+
 
 class SonographyCenterModel(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
