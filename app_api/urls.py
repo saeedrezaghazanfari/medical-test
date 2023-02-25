@@ -16,5 +16,7 @@ urlpatterns = [
     path('api/v1/create/patient/', views.CreatePatient.as_view()),
     path('api/v1/create/patient/lab/', views.PatientLab.as_view()),
     path('api/v1/create/patient/sonography/', views.PatientSonography.as_view()),
+    path('api/v1/list/categories/', views.CategoriesList.as_view()),
+    path('api/v1/list/sub-categories/', views.SubCategoriesList.as_view()),
     # path('api/v1/user/password/', views.ChangePassword.as_view()),
 ]

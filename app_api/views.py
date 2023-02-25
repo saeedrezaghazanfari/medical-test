@@ -294,6 +294,7 @@ class CreateLabSUBCategory(APIView):
             if not LabResultSUBCategoryModel.objects.filter(title=request.data.get('title')).exists():
                 new_lab_subcategory = LabResultSUBCategoryModel.objects.create(
                     title=request.data.get('title'),
+                    category=get_object_or_404(LabResultCategoryModel, title=request.data.get('category')),
                 )
             else:
                 return Response({'status': 400})
@@ -476,13 +477,9 @@ class PatientLab(APIView):
             else:
                 return Response({'status': 400})
             
-            sub_category = None
-            if request.data.get('sub_category_title') and LabResultSUBCategoryModel.objects.filter(title=request.data.get('sub_category_title')).exists():
-                sub_category = LabResultSUBCategoryModel.objects.get(title=request.data.get('sub_category_title'))
-
             LabResultModel.objects.create(
                 category=category,
-                sub_category=sub_category,
+                sub_category=request.data.get('sub_category_title'),
                 patient=patient,
                 lab=lab,
                 title=request.data.get('title'),
@@ -534,3 +531,31 @@ class PatientSonography(APIView):
             }
             return Response(response_data)
         return Response({'status': 400})
+    
+
+# url: /api/v1/list/categories/
+class CategoriesList(APIView):
+
+    # permission_classes = [AllowAny]
+
+    def post(self, request):
+        categories = LabResultCategoryModel.objects.all()
+        response_data =  {
+            'categories': LabResultCategorySerializer(categories, many=True).data, 
+            'status': 200
+        }
+        return Response(response_data)
+
+
+# url: /api/v1/list/sub-categories/
+class SubCategoriesList(APIView):
+
+    # permission_classes = [AllowAny]
+
+    def post(self, request):
+        subcategories = LabResultSUBCategoryModel.objects.all()
+        response_data =  {
+            'sub_categories': LabResultSUBCategorySerializer(subcategories, many=True).data, 
+            'status': 200
+        }
+        return Response(response_data)

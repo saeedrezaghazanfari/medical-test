@@ -28,7 +28,7 @@ class LabModel(models.Model):
 class LabResultModel(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     category = models.ForeignKey(to='LabResultCategoryModel', on_delete=models.SET_NULL, null=True, verbose_name=_('دسته بندی'))
-    sub_category = models.ForeignKey(to='LabResultSUBCategoryModel', on_delete=models.SET_NULL, blank=True, null=True, verbose_name=_('زیر دسته بندی'))
+    sub_category = models.CharField(max_length=255, blank=True, null=True, verbose_name=_('زیر دسته بندی'))
     patient = models.ForeignKey(to=PatientModel, on_delete=models.SET_NULL, null=True, verbose_name=_('بیمار'))
     lab = models.ForeignKey(to=LabModel, on_delete=models.SET_NULL, null=True, verbose_name=_('آزمایشگاه'))
     title = models.CharField(max_length=255, verbose_name=_('عنوان آزمایش'))
@@ -63,6 +63,7 @@ class LabResultCategoryModel(models.Model):
 class LabResultSUBCategoryModel(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     title = models.CharField(max_length=255, verbose_name=_('عنوان'))
+    category = models.ForeignKey(to=LabResultCategoryModel, null=True, on_delete=models.SET_NULL, verbose_name=_('دسته بندی'))
 
     class Meta:
         ordering = ['-id']

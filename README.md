@@ -100,7 +100,7 @@ POST: send (title_fa: title of lab category) (title_en: title of lab category)
 /fa/api/v1/create/lab-category/
 ```
 
-POST: send (title: title of lab category)
+POST: send (title: title of lab category) (category: title of category)
 ```
 /fa/api/v1/create/lab-subcategory/
 ```
@@ -132,4 +132,16 @@ POST: send (category_title: enter title of lab category) (sub_category_title: en
 POST: send  (patinet_username: international code of patient) (sono_username: code of sono center) (result: result of patient sonography)
 ```
 /fa/api/v1/create/patient/sonography/
+```
+
+
+POST
+```
+api/v1/list/categories/
+```
+
+
+POST
+```
+api/v1/list/sub-categories/
 ```
