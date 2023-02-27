@@ -135,13 +135,13 @@ POST: send  (patinet_username: international code of patient) (sono_username: co
 ```
 
 
-POST
+GET
 ```
 api/v1/list/categories/
 ```
 
 
-POST
+GET
 ```
 api/v1/list/sub-categories/
 ```

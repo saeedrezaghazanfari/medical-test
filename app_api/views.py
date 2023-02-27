@@ -538,7 +538,7 @@ class CategoriesList(APIView):
 
     # permission_classes = [AllowAny]
 
-    def post(self, request):
+    def get(self, request):
         categories = LabResultCategoryModel.objects.all()
         response_data =  {
             'categories': LabResultCategorySerializer(categories, many=True).data, 
@@ -552,7 +552,7 @@ class SubCategoriesList(APIView):
 
     # permission_classes = [AllowAny]
 
-    def post(self, request):
+    def get(self, request):
         subcategories = LabResultSUBCategoryModel.objects.all()
         response_data =  {
             'sub_categories': LabResultSUBCategorySerializer(subcategories, many=True).data, 
