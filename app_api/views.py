@@ -324,9 +324,25 @@ class CreateManager(APIView):
 
             user = None
 
-            if User.objects.filter(username=request.data.get('username')).exists():
+            if request.data.get('username') and User.objects.filter(username=request.data.get('username')).exists():
                 user = User.objects.get(username=request.data.get('username'))
+
             else:
+                if not request.data.get('username'):
+                    return Response({'msg': 'username is required.', 'status': 400})
+                if not request.data.get('password'):
+                    return Response({'msg': 'password is required.', 'status': 400})
+                if not request.data.get('first_name'):
+                    return Response({'msg': 'first_name is required.', 'status': 400})
+                if not request.data.get('last_name'):
+                    return Response({'msg': 'last_name is required.', 'status': 400})
+                if not request.data.get('email'):
+                    return Response({'msg': 'email is required.', 'status': 400})
+                if not request.data.get('phone'):
+                    return Response({'msg': 'phone is required.', 'status': 400})
+                if not request.data.get('permission'):
+                    return Response({'msg': 'permission is required.', 'status': 400})
+
                 user = User.objects.create_user(
                     username=request.data.get('username'),
                     password=request.data.get('password'),
@@ -388,9 +404,25 @@ class CreateDoctor(APIView):
 
             user = None
 
-            if User.objects.filter(username=request.data.get('username')).exists():
+            if request.data.get('username') and User.objects.filter(username=request.data.get('username')).exists():
                 user = User.objects.get(username=request.data.get('username'))
+
             else:
+                if not request.data.get('username'):
+                    return Response({'msg': 'username is required.', 'status': 400})
+                if not request.data.get('password'):
+                    return Response({'msg': 'password is required.', 'status': 400})
+                if not request.data.get('first_name'):
+                    return Response({'msg': 'first_name is required.', 'status': 400})
+                if not request.data.get('last_name'):
+                    return Response({'msg': 'last_name is required.', 'status': 400})
+                if not request.data.get('email'):
+                    return Response({'msg': 'email is required.', 'status': 400})
+                if not request.data.get('phone'):
+                    return Response({'msg': 'phone is required.', 'status': 400})
+                if not request.data.get('permission'):
+                    return Response({'msg': 'permission is required.', 'status': 400})
+                
                 user = User.objects.create_user(
                     username=request.data.get('username'),
                     password=request.data.get('password'),

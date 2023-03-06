@@ -105,13 +105,13 @@ POST: send (title: title of lab category) (category: title of category)
 /fa/api/v1/create/lab-subcategory/
 ```
 
-POST: send (username: manager national code) (password) (first_name) (last_name) (email) (phone) (permission)
+POST: send (username: manager national code) (password: optional) (first_name: optional) (last_name: optional) (email: optional) (phone: optional) (permission: optional)
 ```
 /fa/api/v1/create/manager/
 ```
 
 
-POST: send (medical_code: doctor medical code) (username: manager national code) (password) (first_name) (last_name) (email) (phone) (permission)
+POST: send (medical_code: doctor medical code) (username: manager national code) (password: optional) (first_name: optional) (last_name: optional) (email: optional) (phone: optional) (permission: optional)
 ```
 /fa/api/v1/create/doctor/
 ```
